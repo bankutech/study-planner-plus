@@ -2,41 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
+/* Study Planner Design System */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    /* Background and base colors */
+    --background: 220 100% 98%;
+    --foreground: 223 84% 5%;
+    
+    /* Main UI colors */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --card-foreground: 223 84% 5%;
+    
+    /* Study Planner Color Palette */
+    --monday: 217 91% 60%;
+    --monday-light: 217 91% 85%;
+    --monday-foreground: 0 0% 100%;
+    
+    --tuesday: 160 84% 39%;
+    --tuesday-light: 160 84% 78%;
+    --tuesday-foreground: 0 0% 100%;
+    
+    --wednesday: 32 95% 44%;
+    --wednesday-light: 32 95% 78%;
+    --wednesday-foreground: 0 0% 100%;
+    
+    --thursday: 262 83% 58%;
+    --thursday-light: 262 83% 84%;
+    --thursday-foreground: 0 0% 100%;
+    
+    --friday: 330 81% 60%;
+    --friday-light: 330 81% 85%;
+    --friday-foreground: 0 0% 100%;
+    
+    --saturday: 239 84% 67%;
+    --saturday-light: 239 84% 87%;
+    --saturday-foreground: 0 0% 100%;
+    
+    --sunday: 0 84% 60%;
+    --sunday-light: 0 84% 85%;
+    --sunday-foreground: 0 0% 100%;
+    
+    /* Subject colors */
+    --subject-purple: 262 83% 58%;
+    --subject-blue: 217 91% 60%;
+    --subject-green: 160 84% 39%;
+    --subject-orange: 32 95% 44%;
+    --subject-red: 0 84% 60%;
+    --subject-indigo: 239 84% 67%;
+    --subject-pink: 330 81% 60%;
+    
+    /* Gradients */
+    --gradient-main: linear-gradient(135deg, hsl(217 91% 60%), hsl(239 84% 67%));
+    --gradient-monday: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 50%));
+    --gradient-tuesday: linear-gradient(135deg, hsl(160 84% 39%), hsl(160 84% 29%));
+    --gradient-wednesday: linear-gradient(135deg, hsl(32 95% 44%), hsl(32 95% 34%));
+    --gradient-thursday: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 83% 48%));
+    --gradient-friday: linear-gradient(135deg, hsl(330 81% 60%), hsl(330 81% 50%));
+    --gradient-saturday: linear-gradient(135deg, hsl(239 84% 67%), hsl(239 84% 57%));
+    --gradient-sunday: linear-gradient(135deg, hsl(0 84% 60%), hsl(0 84% 50%));
+    
+    /* Standard theme colors */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+    
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 217 91% 60%;
+    
+    --radius: 0.75rem;
+    
+    /* Animation variables */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-glow: 0 10px 30px -10px hsl(217 91% 60% / 0.3);
+    --shadow-card: 0 4px 6px -1px hsl(220 13% 91% / 0.3);
+    --shadow-elevated: 0 20px 25px -5px hsl(220 13% 91% / 0.4);
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +151,84 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gradient-to-br from-blue-50 to-indigo-100 text-foreground min-h-screen;
+  }
+}
+
+/* Study Planner Utilities */
+@layer utilities {
+  .day-gradient-monday {
+    background: var(--gradient-monday);
+  }
+  
+  .day-gradient-tuesday {
+    background: var(--gradient-tuesday);
+  }
+  
+  .day-gradient-wednesday {
+    background: var(--gradient-wednesday);
+  }
+  
+  .day-gradient-thursday {
+    background: var(--gradient-thursday);
+  }
+  
+  .day-gradient-friday {
+    background: var(--gradient-friday);
+  }
+  
+  .day-gradient-saturday {
+    background: var(--gradient-saturday);
+  }
+  
+  .day-gradient-sunday {
+    background: var(--gradient-sunday);
+  }
+  
+  .time-slot {
+    min-height: 60px;
+    border: 2px dashed hsl(var(--border));
+    transition: var(--transition-smooth);
+    border-radius: var(--radius);
+  }
+  
+  .time-slot.drag-over {
+    border-color: hsl(var(--primary));
+    background-color: hsl(var(--primary) / 0.1);
+    transform: scale(1.02);
+  }
+  
+  .subject-card {
+    cursor: grab;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-card);
+  }
+  
+  .subject-card:active {
+    cursor: grabbing;
+    transform: rotate(2deg) scale(0.98);
+  }
+  
+  .subject-card.dragging {
+    opacity: 0.5;
+    transform: rotate(5deg);
+  }
+  
+  .scheduled-subject {
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-card);
+  }
+  
+  .scheduled-subject:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  .card-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+  
+  .glow-primary {
+    box-shadow: var(--shadow-glow);
   }
 }
