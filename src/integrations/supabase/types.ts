@@ -14,7 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      study_schedules: {
+        Row: {
+          created_at: string
+          day: string
+          hour: number
+          id: string
+          subject_code: string
+          subject_color: string
+          subject_id: string
+          subject_name: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          hour: number
+          id?: string
+          subject_code: string
+          subject_color: string
+          subject_id: string
+          subject_name: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          hour?: number
+          id?: string
+          subject_code?: string
+          subject_color?: string
+          subject_id?: string
+          subject_name?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -6,6 +6,7 @@ const Index = () => {
   const {
     subjects,
     schedule,
+    loading,
     handleSubjectDragStart,
     handleDropSubject,
     handleRemoveSubject,
@@ -20,6 +21,17 @@ const Index = () => {
   const handleDrop = (day: string, hour: number, subject: any) => {
     handleDropSubject(day, hour, subject);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen p-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-xl text-indigo-800">Loading your study schedule...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-4">
