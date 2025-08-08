@@ -13,6 +13,7 @@ interface ScheduledSubject {
   subject: Subject;
   day: string;
   hour: number;
+  minute: number;
 }
 
 export const useStudyPlanner = () => {
@@ -88,7 +89,8 @@ export const useStudyPlanner = () => {
             color: item.subject_color
           },
           day: item.day,
-          hour: item.hour
+          hour: item.hour,
+          minute: item.minute ?? 0
         };
       });
 
@@ -106,13 +108,14 @@ export const useStudyPlanner = () => {
   }, [toast]);
 
   // Save schedule item to database
-  const saveScheduleItem = useCallback(async (day: string, hour: number, subject: Subject) => {
+  const saveScheduleItem = useCallback(async (day: string, hour: number, subject: Subject, minute: number = 0) => {
     try {
       const { error } = await supabase
         .from('study_schedules')
         .upsert({
           day,
           hour,
+          minute,
           subject_id: subject.id,
           subject_name: subject.name,
           subject_code: subject.code,
@@ -175,13 +178,13 @@ export const useStudyPlanner = () => {
       ...prev,
       [day]: {
         ...prev[day],
-        [hour]: { subject, day, hour }
+        [hour]: { subject, day, hour, minute: 0 }
       }
     }));
     setDraggedSubject(null);
 
     // Save to database
-    await saveScheduleItem(day, hour, subject);
+    await saveScheduleItem(day, hour, subject, 0);
   }, [schedule, saveScheduleItem, toast]);
 
   const handleRemoveSubject = useCallback(async (day: string, hour: number) => {
@@ -203,36 +206,50 @@ export const useStudyPlanner = () => {
   }, [deleteScheduleItem]);
 
   const handleEditSubject = useCallback(async (day: string, hour: number) => {
-    const currentSubject = schedule[day]?.[hour]?.subject;
-    if (!currentSubject) return;
+    const current = schedule[day]?.[hour];
+    if (!current) return;
 
-    const subjectOptions = subjects.map((subject, index) => 
-      `${index + 1}. ${subject.name}`
-    ).join('\n');
-
-    const choice = prompt(
-      `Edit subject for ${day.charAt(0).toUpperCase() + day.slice(1)} ${hour}:00-${hour + 1}:00\n\n` +
-      `Current: ${currentSubject.name}\n\n` +
-      `Choose new subject:\n${subjectOptions}\n\n` +
-      `Enter number (1-${subjects.length}) or cancel:`
+    // Ask for minute update first
+    const currentMinute = typeof current.minute === 'number' ? current.minute : 0;
+    const minuteInput = prompt(
+      `Set start minutes for ${day.charAt(0).toUpperCase() + day.slice(1)} ${hour}:00-${hour + 1}:00` +
+      `\n\nEnter a value between 0 and 59 (current: ${currentMinute})`
     );
 
+    let newMinute = currentMinute;
+    if (minuteInput !== null) {
+      const parsed = parseInt(minuteInput, 10);
+      if (!isNaN(parsed) && parsed >= 0 && parsed <= 59) {
+        newMinute = parsed;
+      }
+    }
+
+    // Optional: change subject
+    const subjectOptions = subjects.map((s, index) => `${index + 1}. ${s.name}`).join('\n');
+    const choice = prompt(
+      `Change subject? (optional)` +
+      `\nCurrent: ${current.subject.name}` +
+      `\n\nChoose new subject number or Cancel to keep the same:` +
+      `\n${subjectOptions}`
+    );
+
+    let newSubject = current.subject;
     const choiceNum = parseInt(choice || '');
     if (choice && choiceNum >= 1 && choiceNum <= subjects.length) {
-      const newSubject = subjects[choiceNum - 1];
-      
-      // Update local state
-      setSchedule(prev => ({
-        ...prev,
-        [day]: {
-          ...prev[day],
-          [hour]: { subject: newSubject, day, hour }
-        }
-      }));
-
-      // Save to database
-      await saveScheduleItem(day, hour, newSubject);
+      newSubject = subjects[choiceNum - 1];
     }
+
+    // Update local state
+    setSchedule(prev => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        [hour]: { subject: newSubject, day, hour, minute: newMinute }
+      }
+    }));
+
+    // Persist
+    await saveScheduleItem(day, hour, newSubject, newMinute);
   }, [schedule, subjects, saveScheduleItem]);
 
   return {

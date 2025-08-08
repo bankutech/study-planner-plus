@@ -1,5 +1,7 @@
-
+import { useState } from 'react';
 import TimeSlot from './TimeSlot';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface Subject {
   id: string;
@@ -16,13 +18,15 @@ interface ScheduledSubject {
 
 interface WeeklyCalendarProps {
   schedule: Record<string, Record<number, ScheduledSubject>>;
+  subjects: Subject[];
   onDropSubject: (day: string, hour: number, subject: Subject) => void;
   onRemoveSubject: (day: string, hour: number) => void;
   onEditSubject: (day: string, hour: number) => void;
 }
 
 const WeeklyCalendar = ({ 
-  schedule, 
+  schedule,
+  subjects, 
   onDropSubject, 
   onRemoveSubject, 
   onEditSubject 
@@ -39,6 +43,8 @@ const WeeklyCalendar = ({
 
   // Only show hours from 6am to 11pm (6-23)
   const hours = Array.from({ length: 18 }, (_, i) => i + 6);
+
+  const [pickerSlot, setPickerSlot] = useState<{ day: string; hour: number } | null>(null);
 
   const getDayHeaderClass = (dayKey: string) => {
     const dayClasses = {
@@ -110,6 +116,7 @@ const WeeklyCalendar = ({
                     onDrop={onDropSubject}
                     onRemove={onRemoveSubject}
                     onEdit={onEditSubject}
+                    onEmptyClick={() => setPickerSlot({ day: day.key, hour })}
                   />
                 ))}
               </div>
@@ -117,6 +124,30 @@ const WeeklyCalendar = ({
           </div>
         </div>
       </div>
+
+      <Dialog open={!!pickerSlot} onOpenChange={(open) => !open && setPickerSlot(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Select a subject</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {subjects.map((s) => (
+              <Button
+                key={s.id}
+                variant="outline"
+                onClick={() => {
+                  if (pickerSlot) {
+                    onDropSubject(pickerSlot.day, pickerSlot.hour, s);
+                    setPickerSlot(null);
+                  }
+                }}
+              >
+                {s.name}
+              </Button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

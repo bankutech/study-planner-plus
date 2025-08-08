@@ -11,6 +11,7 @@ interface ScheduledSubject {
   subject: Subject;
   day: string;
   hour: number;
+  minute?: number;
 }
 
 interface TimeSlotProps {
@@ -20,9 +21,10 @@ interface TimeSlotProps {
   onDrop: (day: string, hour: number, subject: Subject) => void;
   onRemove: (day: string, hour: number) => void;
   onEdit: (day: string, hour: number) => void;
+  onEmptyClick?: (day: string, hour: number) => void;
 }
 
-const TimeSlot = ({ day, hour, scheduledSubject, onDrop, onRemove, onEdit }: TimeSlotProps) => {
+const TimeSlot = ({ day, hour, scheduledSubject, onDrop, onRemove, onEdit, onEmptyClick }: TimeSlotProps) => {
   const [isDragOver, setIsDragOver] = useState(false);
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -94,6 +96,9 @@ const TimeSlot = ({ day, hour, scheduledSubject, onDrop, onRemove, onEdit }: Tim
           `}
           onClick={() => onEdit(day, hour)}
         >
+          <div className="text-[11px] opacity-90 mb-1">
+            {`${String(hour).padStart(2,'0')}:${String(scheduledSubject.minute ?? 0).padStart(2,'0')}`}
+          </div>
           <div className="font-semibold">{scheduledSubject.subject.name}</div>
           <div className="text-xs opacity-90 mt-1">{scheduledSubject.subject.code}</div>
           
@@ -114,7 +119,7 @@ const TimeSlot = ({ day, hour, scheduledSubject, onDrop, onRemove, onEdit }: Tim
           </button>
         </div>
       ) : (
-        <div className="text-xs text-gray-400 opacity-50">Drop subject here</div>
+        <div className="text-xs text-gray-400 opacity-50" role="button" onClick={() => onEmptyClick?.(day, hour)}>Drop subject here</div>
       )}
     </div>
   );

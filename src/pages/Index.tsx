@@ -4,6 +4,7 @@ import SubjectPool from '../components/SubjectPool';
 import WeeklyCalendar from '../components/WeeklyCalendar';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import ExamReminders from '../components/ExamReminders';
 
 const Index = () => {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -88,10 +89,13 @@ const Index = () => {
         
         <WeeklyCalendar
           schedule={schedule}
+          subjects={subjects}
           onDropSubject={handleDrop}
           onRemoveSubject={handleRemoveSubject}
           onEditSubject={handleEditSubject}
         />
+
+        <ExamReminders subjects={subjects} />
       </div>
     </div>
   );

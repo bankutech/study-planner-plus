@@ -14,12 +14,49 @@ export type Database = {
   }
   public: {
     Tables: {
+      exam_reminders: {
+        Row: {
+          created_at: string
+          exam_date: string
+          id: string
+          note: string | null
+          subject_code: string | null
+          subject_color: string | null
+          subject_id: string
+          subject_name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          exam_date: string
+          id?: string
+          note?: string | null
+          subject_code?: string | null
+          subject_color?: string | null
+          subject_id: string
+          subject_name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          exam_date?: string
+          id?: string
+          note?: string | null
+          subject_code?: string | null
+          subject_color?: string | null
+          subject_id?: string
+          subject_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       study_schedules: {
         Row: {
           created_at: string
           day: string
           hour: number
           id: string
+          minute: number
           subject_code: string
           subject_color: string
           subject_id: string
@@ -32,6 +69,7 @@ export type Database = {
           day: string
           hour: number
           id?: string
+          minute?: number
           subject_code: string
           subject_color: string
           subject_id: string
@@ -44,6 +82,7 @@ export type Database = {
           day?: string
           hour?: number
           id?: string
+          minute?: number
           subject_code?: string
           subject_color?: string
           subject_id?: string
