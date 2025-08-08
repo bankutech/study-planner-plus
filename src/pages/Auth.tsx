@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isResetPassword, setIsResetPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,7 +21,18 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      if (isLogin) {
+      if (isResetPassword) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/auth?reset=true`
+        });
+        if (error) throw error;
+        
+        toast({
+          title: "Password reset email sent!",
+          description: "Please check your email for password reset instructions.",
+        });
+        setIsResetPassword(false);
+      } else if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -63,7 +76,10 @@ const Auth = () => {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl text-indigo-800">📚 Study Planner</CardTitle>
           <CardDescription>
-            {isLogin ? 'Sign in to your account' : 'Create a new account'}
+            {isResetPassword 
+              ? 'Reset your password' 
+              : (isLogin ? 'Sign in to your account' : 'Create a new account')
+            }
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -77,29 +93,54 @@ const Auth = () => {
                 required
               />
             </div>
-            <div>
-              <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-              />
-            </div>
+            {!isResetPassword && (
+              <div>
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+            )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Loading...' : (isLogin ? 'Sign In' : 'Sign Up')}
+              {loading ? 'Loading...' : (
+                isResetPassword ? 'Send Reset Email' : (isLogin ? 'Sign In' : 'Sign Up')
+              )}
             </Button>
           </form>
           
-          <div className="mt-4 text-center">
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-indigo-600 hover:text-indigo-800 underline"
-            >
-              {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
-            </button>
+          <div className="mt-4 text-center space-y-2">
+            {!isResetPassword ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="text-indigo-600 hover:text-indigo-800 underline block w-full"
+                >
+                  {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+                </button>
+                {isLogin && (
+                  <button
+                    type="button"
+                    onClick={() => setIsResetPassword(true)}
+                    className="text-indigo-600 hover:text-indigo-800 underline block w-full"
+                  >
+                    Forgot your password?
+                  </button>
+                )}
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsResetPassword(false)}
+                className="text-indigo-600 hover:text-indigo-800 underline block w-full"
+              >
+                Back to sign in
+              </button>
+            )}
           </div>
         </CardContent>
       </Card>

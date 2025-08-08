@@ -1,3 +1,4 @@
+
 import TimeSlot from './TimeSlot';
 
 interface Subject {
@@ -36,7 +37,8 @@ const WeeklyCalendar = ({
     { key: 'sunday', label: '📅 Sunday' }
   ];
 
-  const hours = Array.from({ length: 24 }, (_, i) => i);
+  // Only show hours from 6am to 11pm (6-23)
+  const hours = Array.from({ length: 18 }, (_, i) => i + 6);
 
   const getDayHeaderClass = (dayKey: string) => {
     const dayClasses = {
@@ -49,6 +51,18 @@ const WeeklyCalendar = ({
       sunday: 'day-gradient-sunday'
     };
     return dayClasses[dayKey as keyof typeof dayClasses] || '';
+  };
+
+  const formatTimeRange = (hour: number) => {
+    const startHour = hour;
+    const endHour = hour + 1;
+    const formatHour = (h: number) => {
+      if (h === 0) return '12:00 AM';
+      if (h < 12) return `${h}:00 AM`;
+      if (h === 12) return '12:00 PM';
+      return `${h - 12}:00 PM`;
+    };
+    return `${formatHour(startHour)} - ${formatHour(endHour)}`;
   };
 
   return (
@@ -83,7 +97,7 @@ const WeeklyCalendar = ({
               <div key={hour} className="grid grid-cols-8 gap-2">
                 {/* Time label */}
                 <div className="text-sm font-medium text-white p-3 text-center bg-gradient-to-r from-gray-600 to-gray-700 rounded-lg shadow-sm">
-                  {hour.toString().padStart(2, '0')}:00 - {(hour + 1).toString().padStart(2, '0')}:00
+                  {formatTimeRange(hour)}
                 </div>
                 
                 {/* Day slots */}
