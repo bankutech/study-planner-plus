@@ -14,12 +14,13 @@ interface ScheduledSubject {
   subject: Subject;
   day: string;
   hour: number;
+  minute?: number;
 }
 
 interface WeeklyCalendarProps {
   schedule: Record<string, Record<number, ScheduledSubject>>;
   subjects: Subject[];
-  onDropSubject: (day: string, hour: number, subject: Subject) => void;
+  onDropSubject: (day: string, hour: number, subject: Subject, minute?: number) => void;
   onRemoveSubject: (day: string, hour: number) => void;
   onEditSubject: (day: string, hour: number) => void;
 }
@@ -45,6 +46,7 @@ const WeeklyCalendar = ({
   const hours = Array.from({ length: 18 }, (_, i) => i + 6);
 
   const [pickerSlot, setPickerSlot] = useState<{ day: string; hour: number } | null>(null);
+  const [pickerMinute, setPickerMinute] = useState<number>(0);
 
   const getDayHeaderClass = (dayKey: string) => {
     const dayClasses = {
@@ -128,8 +130,20 @@ const WeeklyCalendar = ({
       <Dialog open={!!pickerSlot} onOpenChange={(open) => !open && setPickerSlot(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Select a subject</DialogTitle>
+            <DialogTitle>Select a subject and start minute</DialogTitle>
           </DialogHeader>
+          <div className="flex items-center gap-3 mb-4">
+            <label className="text-sm font-medium">Start minutes:</label>
+            <select
+              className="border rounded-md px-2 py-1 text-sm"
+              value={pickerMinute}
+              onChange={(e) => setPickerMinute(Math.max(0, Math.min(59, parseInt(e.target.value || '0', 10))))}
+            >
+              {[0, 15, 30, 45].map((m) => (
+                <option key={m} value={m}>{m.toString().padStart(2,'0')}</option>
+              ))}
+            </select>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {subjects.map((s) => (
               <Button
@@ -137,8 +151,9 @@ const WeeklyCalendar = ({
                 variant="outline"
                 onClick={() => {
                   if (pickerSlot) {
-                    onDropSubject(pickerSlot.day, pickerSlot.hour, s);
+                    onDropSubject(pickerSlot.day, pickerSlot.hour, s, pickerMinute);
                     setPickerSlot(null);
+                    setPickerMinute(0);
                   }
                 }}
               >

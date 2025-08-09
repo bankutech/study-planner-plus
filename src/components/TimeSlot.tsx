@@ -119,7 +119,7 @@ const TimeSlot = ({ day, hour, scheduledSubject, onDrop, onRemove, onEdit, onEmp
           </button>
         </div>
       ) : (
-        <div className="text-xs text-gray-400 opacity-50" role="button" onClick={() => onEmptyClick?.(day, hour)}>Drop subject here</div>
+        <div className="text-xs text-gray-400 opacity-50" role="button" onClick={() => onEmptyClick?.(day, hour)}>Tap to add</div>
       )}
     </div>
   );

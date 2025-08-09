@@ -167,7 +167,7 @@ export const useStudyPlanner = () => {
     setDraggedSubject(subject);
   }, []);
 
-  const handleDropSubject = useCallback(async (day: string, hour: number, subject: Subject) => {
+  const handleDropSubject = useCallback(async (day: string, hour: number, subject: Subject, minute: number = 0) => {
     // Check if slot is already occupied
     if (schedule[day]?.[hour]) {
       toast({
@@ -183,13 +183,13 @@ export const useStudyPlanner = () => {
       ...prev,
       [day]: {
         ...prev[day],
-        [hour]: { subject, day, hour, minute: 0 }
+        [hour]: { subject, day, hour, minute }
       }
     }));
     setDraggedSubject(null);
 
     // Save to database
-    await saveScheduleItem(day, hour, subject, 0);
+    await saveScheduleItem(day, hour, subject, minute);
   }, [schedule, saveScheduleItem, toast]);
 
   const handleRemoveSubject = useCallback(async (day: string, hour: number) => {

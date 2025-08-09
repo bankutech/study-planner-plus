@@ -25,8 +25,8 @@ const Index = () => {
     handleSubjectDragStart(subject);
   };
 
-  const handleDrop = (day: string, hour: number, subject: any) => {
-    handleDropSubject(day, hour, subject);
+  const handleDrop = (day: string, hour: number, subject: any, minute?: number) => {
+    handleDropSubject(day, hour, subject, minute ?? 0);
   };
 
   // Show loading while checking auth
