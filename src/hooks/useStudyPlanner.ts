@@ -112,16 +112,21 @@ export const useStudyPlanner = () => {
     try {
       const { error } = await supabase
         .from('study_schedules')
-        .upsert({
-          day,
-          hour,
-          minute,
-          subject_id: subject.id,
-          subject_name: subject.name,
-          subject_code: subject.code,
-          subject_color: subject.color,
-          user_id: (await supabase.auth.getUser()).data.user?.id
-        });
+        .upsert(
+          {
+            day,
+            hour,
+            minute,
+            subject_id: subject.id,
+            subject_name: subject.name,
+            subject_code: subject.code,
+            subject_color: subject.color,
+            user_id: (await supabase.auth.getUser()).data.user?.id
+          },
+          {
+            onConflict: 'user_id,day,hour'
+          }
+        );
 
       if (error) throw error;
     } catch (error) {
