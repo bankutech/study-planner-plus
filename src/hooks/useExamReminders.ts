@@ -56,6 +56,8 @@ export const useExamReminders = () => {
       const user = (await supabase.auth.getUser()).data.user;
       if (!user) throw new Error('Not authenticated');
 
+      const examDate = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+
       const { data, error } = await supabase
         .from('exam_reminders')
         .insert({
@@ -64,7 +66,7 @@ export const useExamReminders = () => {
           subject_name: subject.name,
           subject_code: subject.code,
           subject_color: subject.color,
-          exam_date: date.toISOString().slice(0, 10),
+          exam_date: examDate,
           note: note || null,
         })
         .select('*')

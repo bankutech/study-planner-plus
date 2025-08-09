@@ -26,6 +26,10 @@ const ExamReminders = ({ subjects }: ExamRemindersProps) => {
 
   const selectedSubject = subjects.find((s) => s.id === subjectId);
 
+  const formatLocalDate = (dateStr: string) => {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return new Date(y, (m || 1) - 1, d || 1).toDateString();
+  };
   const handleAdd = async () => {
     if (!date || !selectedSubject) return;
     await addReminder(date, selectedSubject, note);
@@ -107,7 +111,7 @@ const ExamReminders = ({ subjects }: ExamRemindersProps) => {
                 >
                   <div>
                     <div className="font-medium">{r.subject_name}</div>
-                    <div className="text-sm text-gray-500">{new Date(r.exam_date).toDateString()}</div>
+                    <div className="text-sm text-gray-500">{formatLocalDate(r.exam_date)}</div>
                     {r.note && (
                       <div className="text-xs text-gray-500 mt-1">{r.note}</div>
                     )}
